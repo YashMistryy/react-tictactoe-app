@@ -6,18 +6,25 @@ import { useState } from 'react';
 const Board = () => {
      // declaring state of all squares below , with the setSquare(update) function
      const [squareS, setSquares] = useState(Array(9).fill(null))
+     // storing current player information in a state
+     const [player,updateplayer] = useState(false)
      console.log(squareS)
      const handleSquareClick = (clickedPosition) =>{
-          // this will do the logic of handling click on our squares
+
+          if(!squareS[clickedPosition]){
+               // this will do the logic of handling click on our squares
           // using setSquares
           setSquares((currentSquare)=>{
+
                return currentSquare.map((squareValue,position)=>{
                     if(clickedPosition === position){
-                         return 'X'
+                         return player?'O':'X';
                     }
                     return squareValue
                })
           })
+          // updating the player after each button click
+          updateplayer((player)=>!player)}
 
      }
      const renderSquare = (position)=>{
@@ -28,6 +35,7 @@ const Board = () => {
 
      return (
           <div className="board">
+               <h1>Player turn : {player?"O":"X"}</h1>
                <div className="board-row">
                     {renderSquare(0)}
                     {renderSquare(1)}
