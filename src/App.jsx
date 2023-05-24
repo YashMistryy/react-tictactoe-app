@@ -10,19 +10,13 @@ import './styles.scss';
 
 
 function App() {
-     const [counter, setCounter] = useState(1)
-     console.log("----------------------RE-RENDERED----------------------------")
+  console.log("----------------------RE-RENDERED----------------------------")
      
-     const onbtnclick = ()=>{
-      setCounter((counterState)=>{ return counterState+1})
-     }
-
-
+     
+    
      return (
           <div className="app">
                <Board />
-               <button onClick={()=>onbtnclick()}>click me please</button>
-               <div>{counter}</div>
           </div>
      );
 }
