@@ -34,7 +34,15 @@ const checkWinner = (squareS) => {
      }
      return false;
 };
+const checkDraw = (squareS)=>{
+     let length = 9
+     for(let i=0;i<9;i++){
+          if(squareS[i] == null || squareS[i] == false){length--}
+     }
+     if(length==9){return true}
+     return false
 
+}
 function App() {
      // the app component renders from this line to the end
     //  console.log('-----------APP RE-RENDERED-------------');
@@ -45,19 +53,25 @@ function App() {
      // storing current player information in a state
      const [isNext, updateplayer] = useState(false);
      const nextPlayer = isNext ? 'O':'X'
+
+     
+     const isDraw = checkDraw(squareS);
+     if(isDraw){ let statusMessage = "It's a Draw !!!"}
+     
      const winner = checkWinner(squareS);
+     let statusMessage = winner?`Winner is ${winner}`:`Next player is ${nextPlayer}`
+     
      console.log(winner)
 
-     const statusMessage = winner?`Winner is ${winner}`:`Next player is ${nextPlayer}`
      // let store state of game be stored like in-progress , completed
      // const [gameState,updateGameState] = useState(true)
 
-    //  console.log(squareS);
+     // console.log(squareS);
 
      // handelsquareclick mainly changes the state
      const handleSquareClick = (clickedPosition) => {
       
-      if(squareS[clickedPosition] || winner){return}
+      if(squareS[clickedPosition] || winner || isDraw ){return}
       // if(!winner){
         if (!squareS[clickedPosition]) {
                // this will do the logic of handling click on our squares
