@@ -1,32 +1,14 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 import Square from './Square';
 import { useState } from 'react';
 
-const Board = () => {
-     // declaring state of all squares below , with the setSquare(update) function
-     const [squareS, setSquares] = useState(Array(9).fill(null))
-     // storing current player information in a state
-     const [player,updateplayer] = useState(false)
-     console.log(squareS)
-     const handleSquareClick = (clickedPosition) =>{
 
-          if(!squareS[clickedPosition]){
-               // this will do the logic of handling click on our squares
-          // using setSquares
-          setSquares((currentSquare)=>{
 
-               return currentSquare.map((squareValue,position)=>{
-                    if(clickedPosition === position){
-                         return player?'O':'X';
-                    }
-                    return squareValue
-               })
-          })
-          // updating the player after each button click
-          updateplayer((player)=>!player)}
-
-     }
+// Board will recieve props from app regarding square state and onclick function
+const Board = ({squareS,handleSquareClick}) => {
+     
      const renderSquare = (position)=>{
           return(<Square
                 value={squareS[position]}
@@ -35,7 +17,7 @@ const Board = () => {
 
      return (
           <div className="board">
-               <h1>Player turn : {player?"O":"X"}</h1>
+              
                <div className="board-row">
                     {renderSquare(0)}
                     {renderSquare(1)}

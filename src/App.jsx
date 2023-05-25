@@ -8,15 +8,79 @@ import Card from './components/Card';
 import Board from './components/Board';
 import './styles.scss';
 
+const checkWinner = (squareS) => {
+     const winningpatterns = [
+          [0, 1, 2],
+          [3, 4, 5],
+          [6, 7, 8],
+          [0, 3, 6],
+          [1, 4, 7],
+          [2, 5, 8],
+          [0, 4, 8],
+          [2, 4, 6]
+     ];
+     // checking if current state is the winning state or not
+     for (let i = 0; i < winningpatterns.length; i++) {
+          const [a, b, c] = winningpatterns[i];
+          if (squareS[a] && squareS[b] && squareS[c]) {
+               if (squareS[a] === squareS[b] && squareS[b] === squareS[c]) {
+                    console.log(
+                         '-------------------------------------HURRAY! WINNER',squareS[a]
+                    );
+                    // updateGameState(()=>false)
+                    return squareS[a];
+               }
+          }
+     }
+     return false;
+};
 
 function App() {
-  console.log("----------------------RE-RENDERED----------------------------")
-     
-     
-    
+     // the app component renders from this line to the end
+    //  console.log('-----------APP RE-RENDERED-------------');
+
+     // declaring state of all squares below , with the setSquare(update) function
+     const [squareS, setSquares] = useState(Array(9).fill(null));
+
+     // storing current player information in a state
+     const [isNext, updateplayer] = useState(false);
+     const nextPlayer = isNext ? 'O':'X'
+     const winner = checkWinner(squareS);
+     console.log(winner)
+
+     const statusMessage = winner?`Winner is ${winner}`:`Next player is ${nextPlayer}`
+     // let store state of game be stored like in-progress , completed
+     // const [gameState,updateGameState] = useState(true)
+
+    //  console.log(squareS);
+
+     // handelsquareclick mainly changes the state
+     const handleSquareClick = (clickedPosition) => {
+      
+      if(squareS[clickedPosition] || winner){return}
+      // if(!winner){
+        if (!squareS[clickedPosition]) {
+               // this will do the logic of handling click on our squares
+               // update state using setSquares
+               setSquares((currentSquare) => {
+                    return currentSquare.map((squareValue, position) => {
+                         if (clickedPosition === position) {
+                              return isNext ? 'O' : 'X';
+                         }
+
+                         return squareValue;
+                    });
+               });
+               // updating the player after each button click
+               updateplayer((player) => !player);
+          }}
+    //  };
+
      return (
           <div className="app">
-               <Board />
+              <p className='playerInfo'>{statusMessage}</p>
+
+               <Board squareS={squareS} handleSquareClick={handleSquareClick} />
           </div>
      );
 }
