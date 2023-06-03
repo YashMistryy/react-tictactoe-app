@@ -3,10 +3,11 @@
 import { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
-import Card from './components/Card';
+import History from './components/History';
 // import './App.css'
 import Board from './components/Board';
 import './styles.scss';
+import { Button } from 'bootstrap';
 
 const checkWinner = (squareS) => {
      const winningpatterns = [
@@ -25,76 +26,145 @@ const checkWinner = (squareS) => {
           if (squareS[a] && squareS[b] && squareS[c]) {
                if (squareS[a] === squareS[b] && squareS[b] === squareS[c]) {
                     console.log(
-                         '-------------------------------------HURRAY! WINNER',squareS[a]
+                         '-------------------------------------HURRAY! WINNER',
+                         squareS[a]
                     );
                     // updateGameState(()=>false)
                     return squareS[a];
+                    // return true
                }
           }
      }
      return false;
 };
-const checkDraw = (squareS)=>{
-     let length = 9
-     for(let i=0;i<9;i++){
-          if(squareS[i] == null || squareS[i] == false){length--}
-     }
-     if(length==9){return true}
-     return false
 
-}
+const checkDraw = (squareS) => {
+     let secondArr = squareS.filter((val) => {
+          // console.log(val)
+          if (val) {
+               return 1;
+          }
+     });
+     if (secondArr.length == 9) {
+          return true;
+     }
+     return false;
+};
+
 function App() {
      // the app component renders from this line to the end
-    //  console.log('-----------APP RE-RENDERED-------------');
-
+     /* previously used squareState to store the state and isNext to store the next player state
+        now using history and current player state for the purpose
      // declaring state of all squares below , with the setSquare(update) function
-     const [squareS, setSquares] = useState(Array(9).fill(null));
-
+     let [squareS, setSquares] = useState(Array(9).fill(null));
      // storing current player information in a state
      const [isNext, updateplayer] = useState(false);
-     const nextPlayer = isNext ? 'O':'X'
+     */
+     const [history, setHistory] = useState([
+          { squareS: Array(9).fill(null), isNext: false }
+     ]);
+     const [currentMove, setCurrentMove] = useState(0);
 
-     
-     const isDraw = checkDraw(squareS);
-     if(isDraw){ let statusMessage = "It's a Draw !!!"}
-     
-     const winner = checkWinner(squareS);
-     let statusMessage = winner?`Winner is ${winner}`:`Next player is ${nextPlayer}`
-     
-     console.log(winner)
+     console.log(currentMove);
+     console.log(history);
+     // using gamingBoard which takes the value of current move and current sqaure state
+     const gamingBoard = history[currentMove];
+
+     const nextPlayer = gamingBoard.isNext ? 'O' : 'X';
+     // const nextPlayer = 'x'
+
+     const winner = checkWinner(gamingBoard.squareS);
+
+     const isDraw = checkDraw(gamingBoard.squareS);
+
+     let statusMessage = winner
+          ? `Winner is ${winner}`
+          : `Next player is ${nextPlayer}`;
+     if (isDraw && !winner) {
+          statusMessage = "It's a Draw !!!";
+     }
 
      // let store state of game be stored like in-progress , completed
-     // const [gameState,updateGameState] = useState(true)
+     const [gameState, updateGameState] = useState(true);
 
-     // console.log(squareS);
-
-     // handelsquareclick mainly changes the state
+     // handelsquareclick mainly changes the state of squares
      const handleSquareClick = (clickedPosition) => {
-      
-      if(squareS[clickedPosition] || winner || isDraw ){return}
-      // if(!winner){
-        if (!squareS[clickedPosition]) {
+          if (gamingBoard.squareS[clickedPosition] || winner || isDraw) {
+               return;
+          }
+
+          setHistory((currentHistory) => {
+               // to know if be are traversing back in history and changing the past
+               const isTraversing = currentMove + 1 !== currentHistory.length;
+
+               // save the last state
+               const lastGamingboardState = isTraversing
+                    ? currentHistory[currentMove]
+                    : history[history.length - 1];
+               // lets find the next state (state to be)
+               const nextSquareState = lastGamingboardState.squareS.map(
+                    (squareValue, position) => {
+                         if (clickedPosition === position) {
+                              return lastGamingboardState.isNext ? 'X' : 'O';
+                         }
+                         return squareValue;
+                    }
+               );
+               const base = isTraversing
+                    ? currentHistory.slice(0, currentHistory.indexOf(lastGamingboardState) + 1 )
+                    : currentHistory;
+               // console.log(currentHistory)
+               // we have to return the updated state to the history-setHistory
+               return base.concat({
+                    squareS: nextSquareState,
+                    isNext: !lastGamingboardState.isNext
+               });
+          });
+          //    if (!gamingBoard.squareS[clickedPosition]) {
+          /* code changed due to better approach was found using history state
                // this will do the logic of handling click on our squares
                // update state using setSquares
                setSquares((currentSquare) => {
                     return currentSquare.map((squareValue, position) => {
                          if (clickedPosition === position) {
-                              return isNext ? 'O' : 'X';
+                              return gamingBoard.isNext ? 'O' : 'X';
                          }
-
                          return squareValue;
                     });
                });
                // updating the player after each button click
                updateplayer((player) => !player);
-          }}
-    //  };
+               */
+          // }
+          // return;
+          setCurrentMove((move) => move + 1);
+     };
+
+     const resetGame = () => {
+          setCurrentMove(0);
+          setHistory({ squareS: Array(9).fill(null), isNext: false });
+     };
+
+     const moveTo = (pos) => {
+          setCurrentMove(pos);
+     };
 
      return (
           <div className="app">
-              <p className='playerInfo'>{statusMessage}</p>
+               <p className="playerInfo">{statusMessage}</p>
+               <Board
+                    gamingBoard={gamingBoard}
+                    handleSquareClick={handleSquareClick}
+               />
+               <button className="btn-reset" onClick={resetGame}>
+                    RESET
+               </button>
 
-               <Board squareS={squareS} handleSquareClick={handleSquareClick} />
+               <History
+                    history={history}
+                    moveTo={moveTo}
+                    currentMove={currentMove}
+               />
           </div>
      );
 }

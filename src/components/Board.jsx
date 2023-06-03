@@ -7,8 +7,8 @@ import { useState } from 'react';
 
 
 // Board will recieve props from app regarding square state and onclick function
-const Board = ({squareS,handleSquareClick}) => {
-     
+const Board = ({gamingBoard,handleSquareClick}) => {
+     const squareS = gamingBoard.squareS
      const renderSquare = (position)=>{
           return(<Square
                 value={squareS[position]}
