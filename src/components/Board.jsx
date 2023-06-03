@@ -4,20 +4,23 @@
 import Square from './Square';
 import { useState } from 'react';
 
-
-
 // Board will recieve props from app regarding square state and onclick function
-const Board = ({gamingBoard,handleSquareClick}) => {
-     const squareS = gamingBoard.squareS
-     const renderSquare = (position)=>{
-          return(<Square
-                value={squareS[position]}
-                onclick={()=>handleSquareClick(position)} />)
-     }
+const Board = ({ gamingBoard, handleSquareClick, winningSquare }) => {
+     const squareS = gamingBoard.squareS;
+
+     const renderSquare = (position) => {
+          const isWinningSquare = winningSquare.includes(position)
+          return (
+               <Square
+                    value={squareS[position]}
+                    isWinningSquare = {isWinningSquare}
+                    onclick={() => handleSquareClick(position)}
+               />
+          );
+     };
 
      return (
           <div className="board">
-              
                <div className="board-row">
                     {renderSquare(0)}
                     {renderSquare(1)}
@@ -42,5 +45,4 @@ const Board = ({gamingBoard,handleSquareClick}) => {
      );
 };
 
-
-export default Board
+export default Board;

@@ -6,7 +6,8 @@ import viteLogo from '/vite.svg';
 import History from './components/History';
 // import './App.css'
 import Board from './components/Board';
-import './styles.scss';
+// import './styles.scss';
+import './styles.scss'
 import { Button } from 'bootstrap';
 
 const checkWinner = (squareS) => {
@@ -30,12 +31,13 @@ const checkWinner = (squareS) => {
                          squareS[a]
                     );
                     // updateGameState(()=>false)
-                    return squareS[a];
+                    return {winner:squareS[a],
+                            winningSquare:winningpatterns[i]};
                     // return true
                }
           }
      }
-     return false;
+     return {winner:false,winningSquare:[]}
 };
 
 const checkDraw = (squareS) => {
@@ -72,7 +74,7 @@ function App() {
      const nextPlayer = gamingBoard.isNext ? 'O' : 'X';
      // const nextPlayer = 'x'
 
-     const winner = checkWinner(gamingBoard.squareS);
+     const {winner,winningSquare} = checkWinner(gamingBoard.squareS);
 
      const isDraw = checkDraw(gamingBoard.squareS);
 
@@ -149,11 +151,14 @@ function App() {
      };
 
      return (
+          
           <div className="app">
+               <h1>TIC <span className='text-orange'>TAC</span> TOE</h1>
                <p className="playerInfo">{statusMessage}</p>
                <Board
                     gamingBoard={gamingBoard}
                     handleSquareClick={handleSquareClick}
+                    winningSquare={winningSquare}
                />
                <button className="btn-reset" onClick={resetGame}>
                     RESET
