@@ -50,7 +50,7 @@ const checkDraw = (squareS) => {
      }
      return false;
 };
-
+// const NEW_GAME
 function App() {
      // the app component renders from this line to the end
      /* previously used squareState to store the state and isNext to store the next player state
@@ -60,16 +60,15 @@ function App() {
      // storing current player information in a state
      const [isNext, updateplayer] = useState(false);
      */
-     const [history, setHistory] = useState([
-          { squareS: Array(9).fill(null), isNext: false }
-     ]);
+     const [history, setHistory] = useState([{ squareS: Array(9).fill(null), isNext: false }]);
      const [currentMove, setCurrentMove] = useState(0);
 
      console.log(currentMove);
-     console.log(history);
+     console.log(history[currentMove]);
+     // console.log(history[currentMove]);
      // using gamingBoard which takes the value of current move and current sqaure state
      const gamingBoard = history[currentMove];
-
+     // console.log(gamingBoard);
      const nextPlayer = gamingBoard.isNext ? 'O' : 'X';
      // const nextPlayer = 'x'
 
@@ -142,7 +141,7 @@ function App() {
 
      const resetGame = () => {
           setCurrentMove(0);
-          setHistory({ squareS: Array(9).fill(null), isNext: false });
+          setHistory([{ squareS: Array(9).fill(null), isNext: false }]);
      };
 
      const moveTo = (pos) => {
