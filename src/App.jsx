@@ -71,7 +71,7 @@ function App() {
      // using gamingBoard which takes the value of current move and current sqaure state
      const gamingBoard = history[currentMove];
      // console.log(gamingBoard);
-     const nextPlayer = gamingBoard.isNext ? 'O' : 'X';
+     const nextPlayer = gamingBoard.isNext ? 'X' : 'O';
      // const nextPlayer = 'x'
 
      const {winner,winningSquare} = checkWinner(gamingBoard.squareS);
@@ -170,6 +170,7 @@ function App() {
                     currentMove={currentMove}
                />
           </div>
+          
      );
 }
 
